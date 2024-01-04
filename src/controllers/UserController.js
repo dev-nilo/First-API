@@ -29,14 +29,7 @@ module.exports = {
   },
 
   createUser(request, response) {
-    let body = ''
-
-    request.on('data', (chunk) => {
-      body += chunk
-  })
-
-    request.on('end', () => {
-      body = JSON.parse(body)
+      const { body } = request
 
       const lastUserId = users[users.length - 1].id
       const newUser = {
@@ -47,7 +40,5 @@ module.exports = {
       users.push(newUser)
 
       response.send(200, newUser)
-    })
-
   },
 }
