@@ -17,6 +17,8 @@ const server = http.createServer((request, response) => {
     id = splitEndPoint[1]
   }
 
+
+  const bodyParser = require('./helpers/bodyParser')
   const route = routes.find((routeObj) => (
     routeObj.endpoint === pathname && routeObj.method === request.method
   ))
@@ -30,7 +32,11 @@ const server = http.createServer((request, response) => {
         response.end(JSON.stringify(body))
       }
 
-      route.handler(request, response)
+      if(request.method === 'POST' || request.method === 'PUT') {
+        bodyParser(requests, () => route.handler(request, response))
+      } else {
+        route.handler(request, response)
+      }
     }  else {
       response.writeHead(404, { "Content-Type": "text/html" })
       response.end(`Cannot ${request.method} ${parsedUrl.pathname}`)
